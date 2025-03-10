@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import router from "next/router";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -59,6 +60,11 @@ export function DashboardSidebar() {
     },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
+
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
@@ -89,10 +95,13 @@ export function DashboardSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/logout">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
                 <LogOut className="h-5 w-5" />
                 <span>Logout</span>
-              </Link>
+              </button>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
