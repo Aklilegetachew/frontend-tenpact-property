@@ -17,7 +17,7 @@ interface Shop {
 }
 
 interface ChangeStatusModalProps {
-  shop: Shop;
+  shop: any;
   onClose: () => void;
   onConfirm: () => void;
 }

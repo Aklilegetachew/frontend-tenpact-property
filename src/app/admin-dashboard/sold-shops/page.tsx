@@ -24,12 +24,17 @@ import { ChangeStatusModal } from "@/components/ChangeStatusModal";
 import { DeleteShopModal } from "@/components/DeleteShopModal";
 
 interface Shop {
-  id: number;
-
+  id: string; // Changed from number to string
   shopNumber: string;
-  floor: any;
+  floor: {
+    id: string;
+    name: string;
+    number: number;
+  };
   size: number;
-  status: "Available" | "Occupied" | "Sold";
+  status: "AVAILABLE" | "OCCUPIED" | "SOLD"; // Updated status values
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function AvailableShopsPage() {
@@ -51,7 +56,23 @@ export default function AvailableShopsPage() {
     try {
       const response = await api.get("/admin/shops/sold");
       console.log("Shops", response.data);
-      setShops(response.data);
+
+      // Map the new response format to the Shop interface
+      const formattedShops = response.data.map((shop: any) => ({
+        id: shop.id,
+        shopNumber: shop.shopNumber,
+        floor: {
+          id: shop.floorId,
+          name: shop.floorName,
+          number: shop.floorNumber,
+        },
+        size: shop.size,
+        status: shop.status,
+        createdAt: shop.createdAt,
+        updatedAt: shop.updatedAt,
+      }));
+
+      setShops(formattedShops);
     } catch (error: any) {
       setError("Error fetching shops data");
       console.error("Error fetching shops data:", error);
@@ -62,7 +83,12 @@ export default function AvailableShopsPage() {
 
   const handleEditShop = async (updatedShop: Shop) => {
     try {
-      await api.put(`/sales/shops/${updatedShop.id}`, updatedShop);
+      await api.put(`/sales/shops/${updatedShop.id}`, {
+        shopNumber: updatedShop.shopNumber,
+        floorId: updatedShop.floor.id,
+        size: updatedShop.size,
+      });
+
       setShops(
         shops.map((shop) => (shop.id === updatedShop.id ? updatedShop : shop))
       );
@@ -74,8 +100,9 @@ export default function AvailableShopsPage() {
 
   const handleChangeStatus = async (shop: Shop) => {
     try {
-      const newStatus = "Available";
+      const newStatus = "AVAILABLE"; // Updated status value
       await api.patch(`/sales/shops/${shop.id}/status`, { status: newStatus });
+
       setShops(
         shops.map((s) => (s.id === shop.id ? { ...s, status: newStatus } : s))
       );
@@ -85,7 +112,7 @@ export default function AvailableShopsPage() {
     }
   };
 
-  const handleDeleteShop = async (shopId: number) => {
+  const handleDeleteShop = async (shopId: string) => {
     try {
       await api.delete(`/admin/shops/${shopId}`);
       setShops(shops.filter((shop) => shop.id !== shopId));
@@ -134,9 +161,9 @@ export default function AvailableShopsPage() {
                     <TableCell>
                       <span
                         className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          shop.status === "Available"
+                          shop.status === "AVAILABLE"
                             ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                            : shop.status === "Occupied"
+                            : shop.status === "OCCUPIED"
                             ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
                             : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
                         }`}

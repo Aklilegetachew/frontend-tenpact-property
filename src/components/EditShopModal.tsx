@@ -46,9 +46,9 @@ interface Floor {
 }
 
 interface EditShopModalProps {
-  shop: Shop;
+  shop: any;
   onClose: () => void;
-  onSubmit: (updatedShop: Shop) => void;
+  onSubmit: (updatedShop: any) => void;
 }
 
 const formSchema = z.object({
@@ -65,7 +65,7 @@ export function EditShopModal({ shop, onClose, onSubmit }: EditShopModalProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       shopNumber: shop.shopNumber,
-      floorId: shop.floor.id,
+      floorId: shop.floorId,
       size: shop.size,
     },
   });
@@ -87,6 +87,7 @@ export function EditShopModal({ shop, onClose, onSubmit }: EditShopModalProps) {
   }, []);
 
   const handleFormSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log(data);
     const updatedShop: Shop = {
       ...shop,
       shopNumber: data.shopNumber,

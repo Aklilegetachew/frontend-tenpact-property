@@ -49,7 +49,7 @@ const formSchema = z.object({
 
 export default function AddShopPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [floors, setFloors] = useState<Floor[]>([]);
+  const [floors, setFloors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 

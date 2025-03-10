@@ -16,7 +16,7 @@ interface Shop {
   status: "Available" | "Occupied" | "Sold";
 }
 interface DeleteShopModalProps {
-  shop: Shop;
+  shop: any;
   onClose: () => void;
   onConfirm: () => void;
 }
@@ -33,9 +33,8 @@ export function DeleteShopModal({
           <DialogTitle>Delete Shop</DialogTitle>
         </DialogHeader>
         <p>
-          Are you sure you want to delete {shop.
-shopNumber}? This action cannot be
-          undone.
+          Are you sure you want to delete {shop.shopNumber}? This action cannot
+          be undone.
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
